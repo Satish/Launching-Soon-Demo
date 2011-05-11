@@ -1,0 +1,3 @@
+h1. LaunchingSoon
+
+Launching-Soon Plugin Test Application. "Live Demo":http://launching-soon.heroku.com/)

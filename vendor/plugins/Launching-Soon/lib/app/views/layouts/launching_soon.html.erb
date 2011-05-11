@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Launching Soon</title>
+    <script type="text/javascript">
+      var currenttime = "<%= Time.now -%>";
+    </script>
+    <%= javascript_include_tag :defaults, 'countdown', :cache => true -%>
+    <%= stylesheet_link_tag @css_file %>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo"><h1>Launching Soon</h1></div>
+      </div>  
+      <h2 class="tagline">Every Web site needs a launching page, have yours in minutes</h2>
+      <%= yield -%>
+      <div id="footer">
+        <span class="footer-text">
+          &copy; 2009
+          <%= link_to "www.vinsol.com", "http://vinsol.com" -%> |
+          <%= link_to "Contact Us", "http://vinsol.com/contact-us" -%> |
+          Powered by <%= link_to "LaunchingSoon", "http://github.com/Satish/launching_soon/tree/master" -%>
+        <span>
+      </div>
+    </div>
+  </body>
+</html>

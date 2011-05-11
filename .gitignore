@@ -1,0 +1,10 @@
+log/*.log
+log/*.pid
+tmp/pids/*
+tmp/session/*
+tmp/cache/*
+.project
+.aptana
+db/schema.rb
+config/database.yml
+

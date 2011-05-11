@@ -1,0 +1,120 @@
+h1. LaunchingSoon
+
+Launching soon is a plugin that helps rails projects to manage a dedicated launching soon page before the actual launch date. The plugin also collects email from potential customers.
+
+Options available to store subscriber's email addresses are:
+
+  # CSV file (public/data.csv).
+  # Campaign Monitor ("www.campaignmonitor.com":http://www.campaignmonitor.com).
+  # Mail Chimp ("www.mailchimp.com":http://www.mailchimp.com).
+  # Database.
+
+
+h2. Pre-requisites
+
+You need an account (API Key and List ID) with:
+
+  * Campaign Monitor If you want to use Campaign Monitor as a store for subscriber's email address ("http://www.signup.createsend.com/signup":http://www.signup.createsend.com/signup).
+  * MailChimp  If you want to use MailChimp as a store for subscriber's email address ("http://www.mailchimp.com/signup/":http://www.mailchimp.com/signup/).
+
+h2. Dependencies
+
+If you are using Campaign Monitor this plugin requires the following gems:
+
+gnumarcelo-campaigning
+<pre><code>sudo gem install gnumarcelo-campaigning -s http://gems.github.com</code></pre>
+
+dependencies for gnumarcelo-campaigning: Soap4r
+
+<pre><code>sudo gem install soap4r</code></pre>
+
+h2. Installation
+
+The latest version is available on GitHub. There are a few options for installing LaunchingSoon.
+
+Install as a Rails plugin:
+
+<pre><code>script/plugin install git://github.com/Satish/launching_soon.git</code></pre>
+
+Clone from the Github repository:
+
+<pre><code>git clone git://github.com/Satish/launching_soon.git</code></pre>
+
+h2. Configuration
+
+Configuration is done via @RAILS_ROOT/config/launching_soon.yml@.
+
+The options that you must specify are:
+
+  # css_file_name
+  # html_file_name
+  # option_to_store_email (default: csv)
+  # campaign_monitor_api_key and campaign_monitor_list_id
+     OR
+     mail_chimp_api_key and mail_chimp_list_id
+     OR
+     csv_file_name
+</pre>
+Example configuration (RAILS_ROOT/config/launching_soon.yml)
+<pre><code>
+  html_file_name           : launching_soon.html.erb  # launching soon page contants (app/views/launching_soon.html.erb)
+  css_file_name            : launching_soon.css       # stylesheet for launching soon page (public/stylesheets/launching_soon.css)
+  option_to_store_email    : csv                      # option are : csv | campaign_monitor | mail_chimp | db
+  campaign_monitor_api_key : _put_here_your_api_key_  # CAMPAIGN_MONITOR_API_KEY
+  campaign_monitor_list_id : _put_here_your_list_id_  # CAMPAIGN_MONITOR_LIST_ID
+  mail_chimp_api_key       : _put_here_your_api_key_  # MAIL_CHIMP_API_KEY
+  mail_chimp_list_id       : _put_here_your_list_id_  # MAIL_CHIMP_LIST_ID
+  csv_file_name            : data.csv                 # file to store email addresses of the subscribers (public/data.csv)
+</code></pre>
+
+h2. Usage
+
+Step 1 : Include the LaunchingSoon in ApplicationController:
+<pre><code>
+class ApplicationController < ActionController::Base
+  include LaunchingSoon # if Rails.env.development?
+  ...
+end
+</code></pre>
+
+Step 2 : Add following routes to your applications routes.rb
+<pre><code>
+ActionController::Routing::Routes.draw do |map|
+  map.resources :news_letter_subscribers, :only => [:create]
+	...
+end
+
+OR, alternatively run the following command
+
+ruby script/generate launching_soon_routes
+</code></pre>
+
+Step 3 : Generate migration to add news_letter_subscribers table
+<pre><code>
+class CreateNewsLetterSubscribers < ActiveRecord::Migration
+  def self.up
+    create_table :news_letter_subscribers do |t|
+      t.string :email
+      t.timestamps
+    end
+    add_index :news_letter_subscribers, :email
+  end
+
+  def self.down
+    drop_table :news_letter_subscribers
+  end
+end
+
+OR, alternatively run the following command
+
+rake db:migrate:launching_soon
+</code></pre>
+
+h2. Issue Tracker
+
+Please submit any bugs or annoyances on the lighthouse tracker at
+
+"https://vinsol.lighthouseapp.com/projects/31867-launching-soon/overview":https://vinsol.lighthouseapp.com/projects/31867-launching-soon/overview
+
+
+Copyright (c) 2009 [satish@vinsol.com], released under the MIT license

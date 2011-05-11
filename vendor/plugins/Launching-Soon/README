@@ -1,0 +1,118 @@
+= LaunchingSoon
+==== ===================
+
+Launching soon is a plugin that helps rails projects to manage a dedicated launching soon page before the actual launch date. The plugin also collects email from potential customers.
+
+Options available to store subscriber's email addresses are:
+
+  1. CSV file (public/data.csv).
+  2. Campaign Monitor (www.campaignmonitor.com).
+  3. Mail Chimp (www.mailchimp.com).
+  4. Database.
+
+=== Pre-requisites
+
+You need an account (API Key and List ID) with:
+
+* Campaign Monitor If you want to use Campaign Monitor as a store for subscriber's email address (http://www.signup.createsend.com/signup).
+* MailChimp If you want to use MailChimp as a store for subscriber's email address (http://www.mailchimp.com/signup/).
+
+
+=== Dependencies
+
+If you are using Campaign Monitor this plugin requires the following gems:
+
+  gnumarcelo-campaigning (sudo gem install gnumarcelo-campaigning -s http://gems.github.com)
+
+  gnumarcelo-campaigning gem requires the following gems: Soap4r (sudo gem install soap4r)
+
+
+=== Installation
+
+The latest version is available on GitHub. There are a few options for installing LaunchingSoon.
+
+Install as a Rails plugin:
+
+  script/plugin install git://github.com/Satish/launching_soon.git
+
+Clone from the Github repository:
+
+  git clone git://github.com/Satish/launching_soon.git
+
+
+=== Configuration
+
+Configuration is done via RAILS_ROOT/config/launching_soon.yml.
+
+The options that you must specify are:
+
+    1. css_file_name
+    2. html_file_name
+    3. option_to_store_email (default: csv)
+    4. campaign_monitor_api_key and campaign_monitor_list_id
+       OR
+       mail_chimp_api_key and mail_chimp_list_id
+       OR
+       csv_file_name
+
+
+Example configuration (RAILS_ROOT/config/launching_soon.yml)
+
+  html_file_name           : launching_soon.html.erb  # launching soon page contants (app/views/launching_soon.html.erb)
+  css_file_name            : launching_soon.css       # stylesheet for launching soon page (public/stylesheets/launching_soon.css)
+  option_to_store_email    : csv                      # option are : csv | campaign_monitor | mail_chimp | db
+  campaign_monitor_api_key : _put_here_your_api_key_  # CAMPAIGN_MONITOR_API_KEY
+  campaign_monitor_list_id : _put_here_your_list_id_  # CAMPAIGN_MONITOR_LIST_ID
+  mail_chimp_api_key       : _put_here_your_api_key_  # MAIL_CHIMP_API_KEY
+  mail_chimp_list_id       : _put_here_your_list_id_  # MAIL_CHIMP_LIST_ID
+  csv_file_name            : data.csv                 # file to store email addresses of the subscribers (public/data.csv)
+
+
+=== Usage
+
+Step 1 : First, include the LaunchingSoon in ApplicationController:
+
+  class ApplicationController < ActionController::Base
+    include LaunchingSoon # if Rails.env.development?
+    ...
+  end
+
+Step 2 : Add following routes to your applications routes.rb
+
+  ActionController::Routing::Routes.draw do |map|
+    map.resources :news_letter_subscribers, :only => [:create]
+    ...
+  end
+
+  OR, alternatively run the following command
+
+  ruby script/generate launching_soon_routes
+
+Step 3 : Generate migration to add news_letter_subscribers table
+
+class CreateNewsLetterSubscribers < ActiveRecord::Migration
+  def self.up
+    create_table :news_letter_subscribers do |t|
+      t.string :email
+      t.timestamps
+    end
+    add_index :news_letter_subscribers, :email
+  end
+
+  def self.down
+    drop_table :news_letter_subscribers
+  end
+end
+
+  OR, alternatively run the following command
+
+  rake db:migrate:launching_soon
+
+=== Issue Tracker
+
+Please submit any bugs or annoyances on the lighthouse tracker at
+
+https://vinsol.lighthouseapp.com/projects/31867-launching-soon/overview
+
+
+Copyright (c) 2009 [satish@vinsol.com], released under the MIT license
